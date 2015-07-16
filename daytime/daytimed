@@ -1,0 +1,19 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use IO::Socket;
+
+my $server = IO::Socket::INET->new(
+  LocalPort => 13,
+  Proto     => 'tcp',
+  Reuse     => 1,
+);
+
+$server->listen;
+
+while (my $client = $server->accept) {
+  $client->print(scalar gmtime, "\n");
+  $client->close;
+}
