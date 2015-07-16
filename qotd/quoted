@@ -17,6 +17,7 @@ while (<$file>) {
     $temp .= $_;
   }
 }
+close $file;
 
 my $server = IO::Socket::INET->new(
   LocalPort => 17,
