@@ -18,8 +18,6 @@ while (<$file>) {
   }
 }
 
-printf STDERR "Found %u quotes\n", scalar @quotes;
-
 my $server = IO::Socket::INET->new(
   LocalPort => 17,
   Proto     => 'tcp',
@@ -27,11 +25,9 @@ my $server = IO::Socket::INET->new(
 );
 
 $server->listen;
-printf STDERR "Started server\n";
 
 while (my $client = $server->accept) {
   my $index = (time / 86400) % scalar @quotes;
-  printf STDERR "Got connection, sending quote %u\n", $index;
   $client->print($quotes[$index]);
   $client->close;
 }
