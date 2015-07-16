@@ -1,0 +1,37 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use IO::Socket;
+
+my @quotes = ();
+
+my $temp;
+open my $file, '<', 'quotes.txt';
+while (<$file>) {
+  if ($_ eq "\n") {
+    push @quotes, $temp;
+    $temp = '';
+  } else {
+    $temp .= $_;
+  }
+}
+
+printf STDERR "Found %u quotes\n", scalar @quotes;
+
+my $server = IO::Socket::INET->new(
+  LocalPort => 17,
+  Proto     => 'tcp',
+  Reuse     => 1,
+);
+
+$server->listen;
+printf STDERR "Started server\n";
+
+while (my $client = $server->accept) {
+  my $index = (time / 86400) % scalar @quotes;
+  printf STDERR "Got connection, sending quote %u\n", $index;
+  $client->print($quotes[$index]);
+  $client->close;
+}
