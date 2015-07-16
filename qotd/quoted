@@ -3,21 +3,22 @@
 use strict;
 use warnings;
 
+use IO::File;
 use IO::Socket;
 
 my @quotes = ();
 
 my $temp;
-open my $file, '<', 'quotes.txt';
-while (<$file>) {
-  if ($_ eq "\n") {
+my $file = IO::File->new('quotes.txt', 'r');
+while (my $line = $file->getline) {
+  if ($line eq "\n") {
     push @quotes, $temp;
     $temp = '';
   } else {
-    $temp .= $_;
+    $temp .= $line;
   }
 }
-close $file;
+$file->close;
 
 my $server = IO::Socket::INET->new(
   LocalPort => 17,
