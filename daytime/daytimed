@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 
+use Time::Piece;
 use IO::Socket;
 
 my $server = IO::Socket::INET->new(
@@ -14,6 +15,6 @@ my $server = IO::Socket::INET->new(
 $server->listen;
 
 while (my $client = $server->accept) {
-  $client->print(scalar gmtime, "\n");
+  $client->say(gmtime->datetime . 'Z');
   $client->close;
 }
